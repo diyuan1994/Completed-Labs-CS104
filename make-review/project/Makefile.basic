@@ -1,0 +1,34 @@
+CC=g++
+INCLUDE_DIR=include
+COMMON_DIR=../common
+SRC_DIR=src
+OBJ_DIR=build
+INCLUDES=-I$(COMMON_DIR) -I$(INCLUDE_DIR)
+CPPFLAGS=-g -Wall $(INCLUDES)
+
+all: test1 test2
+
+test1: $(OBJ_DIR)/foo.o $(OBJ_DIR)/bar.o $(OBJ_DIR)/test1.o
+	$(CC) $(CPPFLAGS) -o $(OBJ_DIR)/test1 $(OBJ_DIR)/foo.o $(OBJ_DIR)/bar.o $(OBJ_DIR)/test1.o
+
+test2: $(OBJ_DIR)/list.o $(OBJ_DIR)/bar.o $(OBJ_DIR)/test2.o
+	$(CC) $(CPPFLAGS) -o $(OBJ_DIR)/test2 $(OBJ_DIR)/list.o $(OBJ_DIR)/bar.o $(OBJ_DIR)/test2.o
+
+$(OBJ_DIR)/foo.o:  $(INCLUDE_DIR)/foo.h $(INCLUDE_DIR)/bar.h $(SRC_DIR)/foo.cpp
+	$(CC) $(CPPFLAGS) -c $(SRC_DIR)/foo.cpp -o $@
+
+$(OBJ_DIR)/bar.o:  $(INCLUDE_DIR)/bar.h $(SRC_DIR)/bar.cpp
+	$(CC) $(CPPFLAGS) -c $(SRC_DIR)/bar.cpp -o $@
+
+$(OBJ_DIR)/test1.o:  $(INCLUDE_DIR)/foo.h $(INCLUDE_DIR)/bar.h $(SRC_DIR)/test1.cpp
+	$(CC) $(CPPFLAGS) -c $(SRC_DIR)/test1.cpp -o $@
+
+$(OBJ_DIR)/test2.o:  $(COMMON_DIR)/list.h $(INCLUDE_DIR)/bar.h $(SRC_DIR)/test2.cpp
+	$(CC) $(CPPFLAGS) -c $(SRC_DIR)/test2.cpp -o $@
+
+$(OBJ_DIR)/list.o:  $(COMMON_DIR)/list.h $(COMMON_DIR)/list.cpp
+	$(CC) $(CPPFLAGS) -c $(COMMON_DIR)/list.cpp -o $@
+
+.PHONY: clean
+clean:
+	rm -f $(OBJ_DIR)/*.o $(SRC_DIR)/*~ $(OBJ_DIR)/test1 $(OBJ_DIR)/test2

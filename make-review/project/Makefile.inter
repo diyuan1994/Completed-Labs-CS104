@@ -1,0 +1,44 @@
+CC=g++
+INCLUDE_DIR=include
+COMMON_DIR=../common
+SRC_DIR=src
+OBJ_DIR=build
+INCLUDES=-I$(COMMON_DIR) -I$(INCLUDE_DIR)
+CPPFLAGS=-g -Wall $(INCLUDES)
+
+T1HDRS=$(INCLUDE_DIR)/foo.h \
+	$(INCLUDE_DIR)/bar.h
+
+T1SRCS= foo.cpp \
+	bar.cpp \
+	test1.cpp
+
+T2HDRS=	$(COMMON_DIR)/list.h \
+	$(INCLUDE_DIR)/bar.h
+
+T2SRCS=	bar.cpp \
+	list.cpp  \
+	test2.cpp
+
+T1OBJS=$(patsubst %.cpp, $(OBJ_DIR)/%.o, $(T1SRCS))
+T2OBJS=$(patsubst %.cpp, $(OBJ_DIR)/%.o, $(T2SRCS))
+
+
+all: test1 test2
+
+test1: $(T1OBJS) $(T1HDRS)
+	$(CC) $(CPPFLAGS) -o $(OBJ_DIR)/test1 $(T1OBJS)
+
+test2: $(T2OBJS) $(T2HDRS)
+	$(CC) $(CPPFLAGS) -o $(OBJ_DIR)/test2 $(T2OBJS)
+
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(T1HDRS)
+	$(CC) $(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(COMMON_DIR)/%.cpp $(COMMON_HDRS)
+	$(CC) $(CPPFLAGS) -c $< -o $@
+
+.PHONY: clean
+clean:
+	rm -f $(OBJ_DIR)/*.o $(SRC_DIR)/*~ $(OBJ_DIR)/test1 $(OBJ_DIR)/test2

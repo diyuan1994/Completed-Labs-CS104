@@ -1,1 +1,1 @@
-# Completed-Labs-CS104
+# labs
